@@ -1,32 +1,23 @@
 const bcrypt = require("bcryptjs");
+const { Unauthorized } = require("http-errors");
 const { User } = require("../../models");
 
-const login = async (req, res, next) => {
-  try {
-    const { email, password } = req.body;
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(401).json({
-        status: "Unauthorized",
-        code: 401,
-        message: "Wrong email",
-      });
-    }
-    const hashPassword = user.password;
-    const compareResult = bcrypt.compareSync(password, hashPassword);
-    if (!compareResult) {
-      return res.status(401).json({
-        status: "Unauthorized",
-        code: 401,
-        message: "Wrong password",
-      });
-    }
+const login = async (req, res) => {
+  const { email, password } = req.body;
+  const user = await User.findOne({ email });
 
-    const token = "kjhhbbukhukbkjbjbju";
-    res.json({ token });
-  } catch (error) {
-    next(error);
+  if (!user) {
+    throw new Unauthorized("Email or password is wrong");
   }
+  const hashPassword = user.password;
+  const compareResult = bcrypt.compareSync(password, hashPassword);
+
+  if (!compareResult) {
+    throw new Unauthorized("Email or password is wrong");
+  }
+
+  const token = "kjhhbbukhukbkjbjbju";
+  res.json({ token });
 };
 
 module.exports = login;
