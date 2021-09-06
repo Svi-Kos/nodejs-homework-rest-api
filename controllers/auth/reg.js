@@ -10,12 +10,15 @@ const reg = async (req, res) => {
   }
 
   const hashPassword = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
-  const result = await User.create({ email, password: hashPassword });
+  const { subscription } = await User.create({
+    email,
+    password: hashPassword,
+  });
+
   res.status(201).json({
     status: "Created",
     code: 201,
-    data: result,
-    message: "success register",
+    data: { email, subscription },
   });
 };
 
