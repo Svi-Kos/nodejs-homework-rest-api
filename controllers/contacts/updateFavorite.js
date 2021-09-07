@@ -1,28 +1,26 @@
+const { NotFound, BadRequest } = require("http-errors");
 const { Contact } = require("../../models");
 
 const updateFavorite = async (req, res, next) => {
-  try {
-    const { contactId } = req.params;
-    const { favorite } = req.body;
-    const updateContact = await Contact.findByIdAndUpdate(
-      contactId,
-      { favorite },
-      { new: true }
-    );
-    if (favorite === undefined) {
-      return res.status(400).json({ message: "missing field favorite" });
-    }
-    if (!updateContact) {
-      return res.status(404).json({ message: "Not found" });
-    }
-    res.json({
-      status: "success",
-      code: 200,
-      data: { updateContact },
-    });
-  } catch (e) {
-    next(e);
+  const { contactId } = req.params;
+  const owner = req.user._id;
+  const { favorite } = req.body;
+  const updateContact = await Contact.findOneAndUpdate(
+    { _id: contactId, owner },
+    { favorite },
+    { new: true }
+  );
+  if (favorite === undefined) {
+    throw new BadRequest("missing field favorite");
   }
+  if (!updateContact) {
+    throw new NotFound("Not found");
+  }
+  res.json({
+    status: "success",
+    code: 200,
+    data: { updateContact },
+  });
 };
 
 module.exports = updateFavorite;
