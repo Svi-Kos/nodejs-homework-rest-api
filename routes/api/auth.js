@@ -1,6 +1,6 @@
 const express = require("express");
 
-const { joiSchema } = require("../../models/user");
+const { joiSchema, joiSchemaSub } = require("../../models/user");
 const {
   validation,
   controllerWrapper,
@@ -11,6 +11,7 @@ const { auth: ctrl } = require("../../controllers");
 const router = express.Router();
 
 const userValidationMiddleware = validation(joiSchema);
+const subValidationMiddleware = validation(joiSchemaSub);
 
 router.post("/signup", userValidationMiddleware, controllerWrapper(ctrl.reg));
 
@@ -26,6 +27,13 @@ router.get(
   "/current",
   controllerWrapper(authenticate),
   controllerWrapper(ctrl.current)
+);
+
+router.patch(
+  "/",
+  controllerWrapper(authenticate),
+  subValidationMiddleware,
+  controllerWrapper(ctrl.subscription)
 );
 
 module.exports = router;
