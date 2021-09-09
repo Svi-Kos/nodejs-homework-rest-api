@@ -36,4 +36,11 @@ router.patch(
   controllerWrapper(ctrl.subscription)
 );
 
+router.patch(
+  "/avatars",
+  controllerWrapper(authenticate),
+  userValidationMiddleware,
+  controllerWrapper(ctrl.updateAvatar)
+);
+
 module.exports = router;
