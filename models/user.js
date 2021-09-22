@@ -52,6 +52,10 @@ const joiSchemaSub = Joi.object({
   subscription: Joi.string().valid("starter", "pro", "business"),
 });
 
+const joiSchemaVerify = Joi.object({
+  email: Joi.string().pattern(emailRegexp).required(),
+});
+
 const User = model("user", userSchema);
 
-module.exports = { User, joiSchema, joiSchemaSub };
+module.exports = { User, joiSchema, joiSchemaSub, joiSchemaVerify };

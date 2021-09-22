@@ -5,6 +5,7 @@ const current = require("./current");
 const subscription = require("./subscription");
 const updateAvatar = require("./updateAvatar");
 const verify = require("./verify");
+const reVerify = require("./reVerify");
 
 module.exports = {
   reg,
@@ -14,4 +15,5 @@ module.exports = {
   subscription,
   updateAvatar,
   verify,
+  reVerify,
 };
